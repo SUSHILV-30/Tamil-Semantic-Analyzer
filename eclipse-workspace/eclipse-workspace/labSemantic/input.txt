@@ -1,0 +1,5 @@
+a+b
+a*(b-c)
+x+y*z
+(p+q)*(r-s)
+a+b-c*d

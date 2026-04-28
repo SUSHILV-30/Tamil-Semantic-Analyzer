@@ -1,0 +1,10 @@
+grammar Expr;
+
+expr
+	: expr op=('*') expr 
+	| expr op=('+'|'-') expr 
+	| '-' expr
+	| '(' expr ')'
+	| NUMBER
+	;
+	

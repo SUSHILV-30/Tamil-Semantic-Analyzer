@@ -1,0 +1,22 @@
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.tree.*;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+
+        // 1. Read input from keyboard
+        CharStream input = CharStreams.fromStream(System.in);
+
+        // 2. Create Lexer
+        ExprLexer lexer = new ExprLexer(input);
+
+        // 3. Create Token Stream
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+
+        // 4. Create Parser
+        ExprParser parser = new ExprParser(tokens);
+
+        // 5. Invoke start rule
+        parser.start();
+    }
+}

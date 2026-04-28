@@ -1,0 +1,18 @@
+grammar BoolExpr;
+
+expr 
+	: expr OR term
+	| term
+	;
+	
+term
+	: term AND factor
+	| factor
+	;
+
+factor
+	: NOT factor
+	|'(' expr ')'
+	| TRUE
+	| FALSE
+	;

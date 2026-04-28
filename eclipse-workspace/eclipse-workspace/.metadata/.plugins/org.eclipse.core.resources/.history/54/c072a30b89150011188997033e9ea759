@@ -1,0 +1,7 @@
+grammar Expr;
+
+expr
+	: expr op=('*') expr # MulExpr
+	| expr op=('+'|'-') expr # AddSubExpr
+	| expr 
+	

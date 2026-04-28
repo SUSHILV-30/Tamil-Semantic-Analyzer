@@ -1,0 +1,11 @@
+import org.antlr.v4.runtime.tree.ParseTreeProperty;
+import org.antlr.v4.runtime.tree.ParseTree;
+
+public class EvalListener extends ExprBaseListener {
+	ParseTreeProperty<Integer> values = new ParseTreeProperty<>();
+		
+	private void setValue(ParseTree node, int value) {
+		
+	}
+	
+}

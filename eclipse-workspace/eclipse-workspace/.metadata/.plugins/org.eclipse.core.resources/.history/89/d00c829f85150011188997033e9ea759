@@ -1,0 +1,8 @@
+import java.util.Stack;  public class EvalListener extends BoolExprBaseListener {      private Stack<Boolean> stack = new Stack<>();      public boolean getResult() {            
+ }      @Override     public void exitTrueExpr(BoolExprParser.TrueExprContext ctx) {        
+     }      @Override     public void exitFalseExpr(BoolExprParser.FalseExprContext ctx) { 
+    }      @Override     public void exitNotExpr(BoolExprParser.NotExprContext ctx) {  
+   }      @Override     public void exitAndExpr(BoolExprParser.AndExprContext ctx) { 
+    }      @Override     public void exitOrExpr(BoolExprParser.OrExprContext ctx) { 
+    } }
+

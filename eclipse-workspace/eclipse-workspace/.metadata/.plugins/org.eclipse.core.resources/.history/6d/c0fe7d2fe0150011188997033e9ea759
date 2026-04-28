@@ -1,0 +1,119 @@
+grammar Expr;
+
+/* ---------------- START RULE ---------------- */
+
+start
+    : e=expr EOF
+      {
+        System.out.println("Result = " + $e.val);
+      }
+    ;
+
+/* ---------------- EXPR (OR level) ---------------- */
+
+expr returns [boolean val]
+    : e1=expr OR t=term
+      {
+        $val = $e1.val || $t.val;
+      }
+    | t=term
+      {
+        $val = $t.val;
+      }
+    ;
+
+/* ---------------- TERM (AND level) ---------------- */
+
+term returns [boolean val]
+    : t1=term AND f=factor
+      {
+        $val = $t1.val && $f.val;
+      }
+    | f=factor
+      {
+        $val = $f.val;
+      }
+    ;
+
+/* ---------------- FACTOR (Highest precedence) ---------------- */
+
+factor returns [boolean val]
+    : NOT f=factor
+      {
+        $val = !$f.val;
+      }
+    | '(' e=expr ')'
+      {
+        $val = $e.val;
+      }
+    | TRUE
+      {
+        $val = true;
+      }
+    | FALSE
+      {
+        $val = false;
+      }
+    ;
+
+/* ---------------- LEXER RULES ---------------- */
+
+TRUE  : 'true';
+FALSE : 'false';
+AND   : 'AND';
+OR    : 'OR';
+NOT   : 'NOT';
+
+WS : [ \r\n\t]+ -> skip;
+
+//start
+//	: e=expr EOF
+//	{
+//		System.out.println("Result = " + $e.val);
+//	}
+//	;
+//
+//expr returns [int val]
+//	: e1=expr '+' e2=term
+//	{
+//		$val = $e1.val + $e2.val;
+//	}
+//	| e1=expr '-' e2=term
+//	{
+//		$val = $e1.val - $e2.val;
+//	}
+//	| t1=term
+//	{
+//		$val = $t1.val;
+//	}
+//	;
+//
+//term returns [int val]
+//	: t1=term '*' f1=factor
+//	{
+//		$val = $t1.val * $f1.val;
+//	}
+//	| f1=factor
+//	{
+//		$val = $f1.val;
+//	}
+//	;
+//
+//factor returns [int val]
+//	: '(' e1=expr ')'
+//	{
+//		$val = $e1.val;
+//	}
+//	| '-' f1=factor
+//	{
+//		$val = - $f1.val;
+//	}
+//	| n=NUMBER
+//	{
+//		$val = Integer.parseInt($n.text);
+//	}
+//	;
+//	
+//NUMBER : [0-9]+;
+//WS : [ \n\t\r] -> skip;
+

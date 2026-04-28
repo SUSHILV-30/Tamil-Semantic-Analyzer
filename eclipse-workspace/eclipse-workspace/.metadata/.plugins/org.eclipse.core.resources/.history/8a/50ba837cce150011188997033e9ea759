@@ -1,0 +1,11 @@
+grammar Expr;
+
+expr
+	: expr OR term
+	| term
+	;
+
+term
+	: term AND factor
+	| factor
+	;

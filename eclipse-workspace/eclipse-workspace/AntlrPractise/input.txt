@@ -1,0 +1,13 @@
+x = 2;
+y = 3;
+
+if (x ** 2 + y * 5 > 10 and y != 0):
+{
+    print(x + y);
+}
+else:
+{
+    print(0);
+}
+
+print(x ** y ** 2);

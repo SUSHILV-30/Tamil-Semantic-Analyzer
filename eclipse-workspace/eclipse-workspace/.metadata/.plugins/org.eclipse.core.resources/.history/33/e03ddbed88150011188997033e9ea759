@@ -1,0 +1,5 @@
+grammar Expr;
+
+expr
+	: expr op=('*') expr #MulExpr
+	

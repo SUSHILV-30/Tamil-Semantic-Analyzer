@@ -1,0 +1,19 @@
+grammar Expr;
+
+start
+	: e=expr EOF
+	{
+		System.out.println("Result = " + $e.val);
+	}
+	;
+
+expr returns [int val]
+	: e1=expr '+' e2=term
+	{
+		$val = $e1.val + $e2.val;
+	}
+	| t1=term
+	{
+		$val = t1.val;
+	}
+	;

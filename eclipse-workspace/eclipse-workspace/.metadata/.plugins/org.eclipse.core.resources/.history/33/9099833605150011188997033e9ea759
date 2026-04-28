@@ -1,0 +1,26 @@
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.tree.*;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+
+        // Read input from file
+        CharStream input = CharStreams.fromFileName("input.txt");
+
+        // Create Lexer
+        LabeledExprLexer lexer = new LabeledExprLexer(input);
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+
+        // Create Parser
+        LabeledExprParser parser = new LabeledExprParser(tokens);
+
+        // Start parsing from prog rule
+        ParseTree tree = parser.prog();
+
+        // Create Visitor
+        EvalVisitor eval = new EvalVisitor();
+
+        // Visit parse tree
+        eval.visit(tree);
+    }
+}

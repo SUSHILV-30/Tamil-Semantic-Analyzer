@@ -1,0 +1,10 @@
+grammar Expr;
+
+start
+	: e=expr EOF
+	;
+
+expr
+	: expr '+' term
+	| term
+	;

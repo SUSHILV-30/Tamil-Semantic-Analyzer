@@ -1,0 +1,10 @@
+import org.antlr.v4.runtime.tree.*;
+import java.util.*;l
+import org.antlr.v4.runtime.tree.ParseTreeProperty;
+
+public class EvalListener extends ExprBaseListener{
+	
+	private Stack<Double> stack = new Stack<>();
+	
+	
+}

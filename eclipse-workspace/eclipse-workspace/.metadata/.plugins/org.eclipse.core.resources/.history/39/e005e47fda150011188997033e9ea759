@@ -1,0 +1,31 @@
+grammar Expr;
+
+start : expr EOF { System.out.println("Result = " + $expr.val); };
+
+expr returns [int val]
+    : e1=expr '+' t=term
+        { $val = $e1.val + $t.val; }
+    | e1=expr '-' t=term
+        { $val = $e1.val - $t.val; }
+    | t=term
+        { $val = $t.val; }
+    ;
+
+term returns [int val]
+    : t1=term '*' f=factor
+        { $val = $t1.val * $f.val; }
+    | f=factor
+        { $val = $f.val; }
+    ;
+
+factor returns [int val]
+    : '(' e=expr ')'
+        { $val = $e.val; }
+    | '-' f=factor
+        { $val = - $f.val; }
+    | n=NUM
+        { $val = Integer.parseInt($n.text); }
+    ;
+
+NUM : [0-9]+ ;
+WS  : [ \t\r\n]+ -> skip ;
