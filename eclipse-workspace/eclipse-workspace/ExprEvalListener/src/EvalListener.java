@@ -1,0 +1,95 @@
+import org.antlr.v4.runtime.tree.*;
+import java.util.Map;
+import java.util.HashMap;
+import org.antlr.v4.runtime.tree.ParseTreeProperty;
+
+public class EvalListener extends ExprBaseListener{
+	
+	private ParseTreeProperty<Double> values = new ParseTreeProperty<>();
+	private Map<String,Integer> memory = new HashMap<>();
+	
+	public EvalListener() {
+		memory.put("a", 10);
+		memory.put("b", 10);
+	}
+	
+	private void setValue(ParseTree node, double value) {
+		values.put(node,value);
+	}
+	
+	private double getValue(ParseTree node) {
+		return values.get(node);
+	}
+	
+	public double getResult(ExprParser.ExprContext ctx) {
+		return getValue(ctx);
+	}
+	
+	public void exitIdExpr(ExprParser.IdExprContext ctx) {
+		String varName = ctx.getText();
+		
+		if(!memory.containsKey(varName)) {
+			throw new RuntimeException("Invalid Variable");
+		}
+		
+		setValue(ctx, memory.get(varName));
+	}
+	
+	@Override
+	public void exitNumberExpr(ExprParser.NumberExprContext ctx) {
+		double value = Double.parseDouble(ctx.getText());
+		setValue(ctx,value);
+	}
+	
+	@Override
+	public void exitAddSubExpr(ExprParser.AddSubExprContext ctx) {
+		double left = getValue(ctx.expr());
+		double right = getValue(ctx.term());
+		
+		double result = 0;
+		
+		if(ctx.op.getText().equals("+")) {
+			result = left + right;
+			setValue(ctx,result);
+		}
+		else {
+			result = left - right;
+			setValue(ctx,result);
+		}
+		
+	}
+	
+	@Override
+	
+	public void exitUnaryMinusExpr(ExprParser.UnaryMinusExprContext ctx) {
+		double value = getValue(ctx.factor());
+		setValue(ctx,-value);
+	}
+	
+	@Override
+	public void exitParenExpr(ExprParser.ParenExprContext ctx) {
+	    setValue(ctx, getValue(ctx.expr()));
+	}
+	
+	@Override
+	public void exitMulExpr(ExprParser.MulExprContext ctx) {
+		
+		double left = getValue(ctx.term());
+		double right = getValue(ctx.factor());
+		
+		setValue(ctx,left * right);
+		
+	}
+	
+	@Override
+    public void exitToTerm(ExprParser.ToTermContext ctx) {
+        setValue(ctx,getValue(ctx.term()));
+    }
+
+    // term → factor
+    @Override
+    public void exitToFactor(ExprParser.ToFactorContext ctx) {
+        setValue(ctx, getValue(ctx.factor()));
+    }
+	
+}

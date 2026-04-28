@@ -1,0 +1,19 @@
+grammar Expr;
+
+s 
+	: e EOF
+	;
+
+e
+	: e op='*' e
+	| e op='+' e
+	| INT
+	| ID
+	;
+	
+MULT : '*';
+ADD : '+';
+INT : [0-9]+;
+ID : [a-zA-Z]+;
+WS : [ \t\n\r]+ -> skip;
+

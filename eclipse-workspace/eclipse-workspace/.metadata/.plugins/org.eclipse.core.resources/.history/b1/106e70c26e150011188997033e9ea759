@@ -1,0 +1,24 @@
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.tree.*;
+
+
+public class Main {
+    public static void main(String[] args) {
+
+        String input = "2 + 3 * 4 + b + a * a";
+
+        ExprLexer lexer = new ExprLexer(new ANTLRInputStream(input));
+
+        ExprParser parser = new ExprParser(new CommonTokenStream(lexer));
+
+        ParseTree tree = parser.s();
+
+        ParseTreeWalker walker = new ParseTreeWalker();
+        EvalListener listener = new EvalListener();
+        
+        walker.walk(listener, tree);
+
+        System.out.println("Final Result = " +
+                listener.getResult((ExprParser.SContext) tree));
+    }
+}

@@ -1,0 +1,51 @@
+import org.antlr.v4.runtime.tree.*;
+
+public class EvalVisitor extends ExprBaseVisitor<Double> {
+
+    @Override
+    public Double visitAddSubExpr(ExprParser.AddSubExprContext ctx) {
+        double left  = visit(ctx.expr());
+        double right = visit(ctx.term());
+
+        if (ctx.op.getText().equals("+"))
+            return left + right;
+        else
+            return left - right;
+    }
+    
+    @Override 
+    public void exitIdExpr(ExprParser.IdExprContext ctx)
+ 
+    @Override
+    public Double visitToTerm(ExprParser.ToTermContext ctx) {
+        return visit(ctx.term());
+    }
+
+    @Override
+    public Double visitMulExpr(ExprParser.MulExprContext ctx) {
+        double left  = visit(ctx.term());
+        double right = visit(ctx.factor());
+        return left * right;
+    }
+
+    @Override
+    public Double visitToFactor(ExprParser.ToFactorContext ctx) {
+        return visit(ctx.factor());
+    }
+
+    @Override
+    public Double visitUnaryMinusExpr(ExprParser.UnaryMinusExprContext ctx) {
+        double value = visit(ctx.factor());
+        return -value;
+    }
+
+    @Override
+    public Double visitParenExpr(ExprParser.ParenExprContext ctx) {
+        return visit(ctx.expr());
+    }
+
+    @Override
+    public Double visitNumberExpr(ExprParser.NumberExprContext ctx) {
+        return Double.parseDouble(ctx.NUMBER().getText());
+    }
+}

@@ -1,0 +1,25 @@
+grammar Expr;
+
+expr 
+    : expr OR term      #orExpr
+    | term              #toTerm
+    ;
+    
+term
+    : term AND factor   #andExpr
+    | factor            #toFactor
+    ;
+
+factor
+    : NOT factor        #notExpr
+    | '(' expr ')'      #parenExpr
+    | TRUE              #trueExpr
+    | FALSE             #falseExpr
+    ;
+
+NOT   : 'NOT';
+AND   : 'AND';
+OR    : 'OR';
+TRUE  : 'TRUE';
+FALSE : 'FALSE';
+WS    : [ \t\r\n]+ -> skip;

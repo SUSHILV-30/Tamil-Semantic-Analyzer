@@ -1,0 +1,7 @@
+grammar Exprl
+
+s 
+	: e EOF
+	;
+
+e : e op='*' e

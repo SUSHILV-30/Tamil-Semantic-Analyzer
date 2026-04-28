@@ -1,0 +1,23 @@
+import org.antlr.v4.runtime.tree.*;
+import java.util.*;
+
+import org.antlr.v4.runtime.tree.ParseTreeProperty;
+
+public class EvalListener extends ExprBaseListener{
+	
+	private Stack<Double> stack = new Stack<>();
+	
+	public double getResult() {
+		return stack.peek();
+	}
+	
+	@Override
+	public void exitAddSubExpr(ExprParser.AddSubExprContext ctx) {
+		
+		int right = stack.pop();
+		
+		
+	}
+	
+	
+}

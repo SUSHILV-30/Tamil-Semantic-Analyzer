@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring accessors="true" comment="Delete 4 elements from project &apos;TamilGrammarAttribute&apos;&#x0A;- Original project: &apos;TamilGrammarAttribute&apos;&#x0A;- Original elements:&#x0A;     TamilBaseListener.java&#x0A;     TamilLexer.java&#x0A;     TamilListener.java&#x0A;     TamilParser.java" description="Delete elements" element1="/src&lt;{TamilLexer.java" element2="/src&lt;{TamilBaseListener.java" element3="/src&lt;{TamilParser.java" element4="/src&lt;{TamilListener.java" elements="4" flags="589830" id="org.eclipse.jdt.ui.delete" resources="0" stamp="1771775970277" subPackages="false" version="1.0"/>
+</session>

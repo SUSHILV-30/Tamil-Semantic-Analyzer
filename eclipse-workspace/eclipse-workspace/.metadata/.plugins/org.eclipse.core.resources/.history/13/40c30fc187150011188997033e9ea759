@@ -1,0 +1,40 @@
+import java.util.Stack;
+
+public class EvalListener extends BoolExprBaseListener{
+	
+	private Stack<Boolean> stack = new Stack<>();
+	
+	public boolean getResult() {
+		return stack.peek();
+	}
+	
+	@Override
+	
+	public void exitTrueExpr(BoolExprParser.TrueExprContext ctx) {
+		stack.push(true);
+		//System.out.println("Pushed True");
+	}
+	
+	@Override
+	
+	public void exitFalseExpr(BoolExprParser.FalseExprContext ctx) {
+		stack.push(false);
+		System.out.println("Pushed False");
+	}
+	
+	@Override
+	
+	public void exitNotExpr(BoolExprParser.NotExprContext ctx) {
+		boolean value = stack.pop();
+		boolean result = !value;
+		stack.push(result);
+		System.out.println("Not of : "+value+" = " + result);
+	}
+	
+	@Override
+	
+	public void exitAndExpr(BoolExprParser.AndExprContext ctx) {
+		boolean left = stack.pop();
+	}
+	
+}

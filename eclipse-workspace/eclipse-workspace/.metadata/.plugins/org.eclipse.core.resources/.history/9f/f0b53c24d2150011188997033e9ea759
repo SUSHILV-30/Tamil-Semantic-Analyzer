@@ -1,0 +1,25 @@
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.tree.*;
+
+public class Main {
+
+    public static void main(String[] args) throws Exception {
+
+        String input = "3 + 4 * (a - 1)";
+
+        CharStream cs = CharStreams.fromString(input);
+        ExprLexer lexer = new ExprLexer(cs);
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+        ExprParser parser = new ExprParser(tokens);
+
+        ParseTree tree = parser.expr();
+
+        ParseTreeWalker walker = new ParseTreeWalker();
+        EvalListener listener = new EvalListener();
+
+        walker.walk(listener, tree);
+
+        //  If using stack-based listener
+        System.out.println("Result: " + listener.getResult());
+    }
+}

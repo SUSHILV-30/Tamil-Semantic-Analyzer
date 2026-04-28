@@ -1,0 +1,17 @@
+Noun=1
+Verb=2
+Determiner=3
+Modifier=4
+CaseSuffix=5
+TenseSuffix=6
+MoodSuffix=7
+HonorificSuffix=8
+SENT_END=9
+TAMIL_SYLLABLE=10
+TAMIL_WORD=11
+TAMIL_SUFFIX=12
+TAMIL_NUMBER=13
+PUNCT=14
+NEWLINE=15
+WS=16
+OTHER=17

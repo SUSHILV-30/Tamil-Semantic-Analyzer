@@ -1,0 +1,6 @@
+grammar BoolExpr;
+
+expr 
+	: expr OR term
+	| term
+	;

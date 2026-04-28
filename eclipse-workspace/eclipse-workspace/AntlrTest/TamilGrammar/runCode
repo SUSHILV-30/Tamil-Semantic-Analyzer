@@ -1,0 +1,4 @@
+export CLASSPATH=".:/Users/praneethudayakumar227/antlr-4.13.2-complete.jar:$CLASSPATH" && \
+java -jar /Users/praneethudayakumar227/antlr-4.13.2-complete.jar Tamil.g4 && \
+javac -cp .:/Users/praneethudayakumar227/antlr-4.13.2-complete.jar *.java && \
+java -cp .:/Users/praneethudayakumar227/antlr-4.13.2-complete.jar Main input.txt

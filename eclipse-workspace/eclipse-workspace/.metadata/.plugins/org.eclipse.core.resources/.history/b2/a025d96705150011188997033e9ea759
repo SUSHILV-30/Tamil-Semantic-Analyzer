@@ -1,0 +1,41 @@
+import java.io.*;
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.tree.*;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+
+        // Read from file instead of keyboard
+        BufferedReader reader = new BufferedReader(new FileReader("input.txt"));
+        EvalVisitor eval = new EvalVisitor();
+
+        System.out.println("Reading expressions from input.txt...\n");
+
+        String line;
+
+        while ((line = reader.readLine()) != null) {
+
+            line = line.trim();
+
+            if (line.isEmpty())
+                continue;
+
+            // Convert line to ANTLR CharStream
+            CharStream input = CharStreams.fromString(line + "\n");
+
+            LabeledExprLexer lexer = new LabeledExprLexer(input);
+            CommonTokenStream tokens = new CommonTokenStream(lexer);
+            LabeledExprParser parser = new LabeledExprParser(tokens);
+
+            // Parse single expression
+            ParseTree tree = parser.expr();
+
+            Integer result = eval.visit(tree);
+
+            System.out.println(result);
+        }
+
+        reader.close();
+        System.out.println("\nProgram finished.");
+    }
+}

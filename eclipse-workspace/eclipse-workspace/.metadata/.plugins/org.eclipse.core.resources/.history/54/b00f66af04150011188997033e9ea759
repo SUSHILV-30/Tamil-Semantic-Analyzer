@@ -1,0 +1,36 @@
+import java.io.*;
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.tree.*;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        EvalVisitor eval = new EvalVisitor();
+
+        System.out.println("Enter expressions (type 'exit' to end):");
+
+        while (true) {
+            String line = reader.readLine();
+            if (line == null) break;
+
+            line = line.trim();
+            if (line.equalsIgnoreCase("exit")) {
+                System.out.println("Program ended.");
+                break;
+            }
+            if (line.isEmpty()) continue;
+
+            // 
+            CharStream input = CharStreams.fromString(line);
+            LabeledExprLexer lexer = new LabeledExprLexer(input);
+            CommonTokenStream tokens = new CommonTokenStream(lexer);
+            LabeledExprParser parser = new LabeledExprParser(tokens);
+
+            ParseTree tree = parser.expr();
+            Integer result = eval.visit(tree);
+
+            System.out.println(result);
+        }
+    }
+}

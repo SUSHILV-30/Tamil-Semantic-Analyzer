@@ -1,0 +1,10 @@
+import org.antlr.v4.runtime.tree.*;
+
+public class EvalVisitor extends ExprBaseVisitor<Boolean> {
+	
+	@Override
+	public boolean visitOrExpr(ExprParser.OrExprContext ctx) {
+		
+	}
+    
+}

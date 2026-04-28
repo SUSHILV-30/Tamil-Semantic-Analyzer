@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring accessors="true" comment="Delete 7 elements from project &apos;Visitors&apos;&#x0A;- Original project: &apos;Visitors&apos;&#x0A;- Original elements:&#x0A;     EvalVisitor.java&#x0A;     ExprBaseListener.java&#x0A;     ExprBaseVisitor.java&#x0A;     ExprLexer.java&#x0A;     ExprListener.java&#x0A;     ExprParser.java&#x0A;     ExprVisitor.java" description="Delete elements" element1="/src&lt;{ExprListener.java" element2="/src&lt;{ExprVisitor.java" element3="/src&lt;{EvalVisitor.java" element4="/src&lt;{ExprBaseVisitor.java" element5="/src&lt;{ExprBaseListener.java" element6="/src&lt;{ExprLexer.java" element7="/src&lt;{ExprParser.java" elements="7" flags="589830" id="org.eclipse.jdt.ui.delete" resources="0" stamp="1771772053539" subPackages="false" version="1.0"/>
+</session>

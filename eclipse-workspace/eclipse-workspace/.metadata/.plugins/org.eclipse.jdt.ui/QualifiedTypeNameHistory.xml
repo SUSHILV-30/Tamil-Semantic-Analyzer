@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+    <fullyQualifiedTypeName name="ExprParser.IntContext"/>
+    <fullyQualifiedTypeName name="ExprParser.MulDivContext"/>
+    <fullyQualifiedTypeName name="ExprParser.AddSubContext"/>
+    <fullyQualifiedTypeName name="ExprParser.EContext"/>
+    <fullyQualifiedTypeName name="javax.management.RuntimeErrorException"/>
+    <fullyQualifiedTypeName name="LabeledExprParser.AssignContext"/>
+    <fullyQualifiedTypeName name="LabeledExprParser.PrintExprContext"/>
+    <fullyQualifiedTypeName name="LabeledExprParser.IntContext"/>
+    <fullyQualifiedTypeName name="LabeledExprParser.IdContext"/>
+    <fullyQualifiedTypeName name="LabeledExprParser.MulDivContext"/>
+    <fullyQualifiedTypeName name="LabeledExprParser.AddSubContext"/>
+    <fullyQualifiedTypeName name="LabeledExprParser.ParensContext"/>
+    <fullyQualifiedTypeName name="LabeledExprParser.BlankContext"/>
+    <fullyQualifiedTypeName name="LabeledExprLexer"/>
+    <fullyQualifiedTypeName name="org.antlr.v4.runtime.CommonToken"/>
+    <fullyQualifiedTypeName name="LabeledExprParser"/>
+    <fullyQualifiedTypeName name="org.antlr.v4.runtime.tree.ParseTree"/>
+    <fullyQualifiedTypeName name="org.antlr.v4.runtime.CommonTokenStream"/>
+    <fullyQualifiedTypeName name="ExprParser.SContext"/>
+    <fullyQualifiedTypeName name="java.util.Stack"/>
+    <fullyQualifiedTypeName name="BoolExprBaseListener"/>
+    <fullyQualifiedTypeName name="BoolExprParser"/>
+    <fullyQualifiedTypeName name="BoolExprParser.FalseExprContext"/>
+    <fullyQualifiedTypeName name="BoolExprParser.NotExprContext"/>
+    <fullyQualifiedTypeName name="org.antlr.v4.runtime.tree.ParseTreeProperty"/>
+    <fullyQualifiedTypeName name="ExprParser.ParenExprContext"/>
+    <fullyQualifiedTypeName name="ExprParser.ExprContext"/>
+    <fullyQualifiedTypeName name="ExprParser"/>
+    <fullyQualifiedTypeName name="ExprParser.AddSubExprContext"/>
+    <fullyQualifiedTypeName name="ExprParser.MulExprContext"/>
+    <fullyQualifiedTypeName name="ExprParser.UnaryMinusExprContext"/>
+    <fullyQualifiedTypeName name="ExprParser.NumberExprContext"/>
+    <fullyQualifiedTypeName name="BoolExprParser.OrExprContext"/>
+    <fullyQualifiedTypeName name="BoolExprParser.ToTermContext"/>
+    <fullyQualifiedTypeName name="java.util.Map"/>
+    <fullyQualifiedTypeName name="java.util.HashMap"/>
+    <fullyQualifiedTypeName name="java.lang.RuntimeException"/>
+</qualifiedTypeNameHistroy>

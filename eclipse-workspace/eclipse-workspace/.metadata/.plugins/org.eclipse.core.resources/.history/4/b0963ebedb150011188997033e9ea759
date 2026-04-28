@@ -1,0 +1,6 @@
+grammar Expr;
+
+expr
+	: expr '+' term
+	| term
+	;

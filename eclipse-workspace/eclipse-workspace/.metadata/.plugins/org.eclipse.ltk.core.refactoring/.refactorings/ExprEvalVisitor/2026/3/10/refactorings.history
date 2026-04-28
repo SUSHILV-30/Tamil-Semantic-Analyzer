@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename type &apos;EvalListener&apos; to &apos;EvalVisitor&apos;&#x0A;- Original project: &apos;ExprEvalVisitor&apos;&#x0A;- Original element: &apos;EvalListener&apos;&#x0A;- Renamed element: &apos;EvalVisitor&apos;&#x0A;- Update references to refactored element&#x0A;- Update textual occurrences in comments and strings" description="Rename type &apos;EvalListener&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.type" input="/src&lt;{EvalListener.java[EvalListener" matchStrategy="1" name="EvalVisitor" qualified="false" references="true" similarDeclarations="false" stamp="1772410798717" textual="false" version="1.0"/>
+</session>

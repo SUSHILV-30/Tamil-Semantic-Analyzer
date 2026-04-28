@@ -1,0 +1,21 @@
+import java.util.Stack;
+
+public class EvalListener extends BoolExprBaseListener{
+	
+	private Stack<Boolean> stack = new Stack<>();
+	
+	public boolean getResult() {
+		return stack.peek();
+	}
+	
+	@Override
+	
+	public void exitTrueExpr(BoolExprParser.TrueE)
+	
+	@Override
+	
+	@Override
+	
+	@Override
+	
+}

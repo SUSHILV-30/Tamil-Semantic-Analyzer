@@ -1,0 +1,41 @@
+import java.util.Stack;
+
+public class EvalListener extends ExprBaseListener {
+
+    private Stack<Double> stack = new Stack<>();
+    HasMap<String,Integer> memoryTable = new Map<>();
+
+    public double getResult() {
+        return stack.peek();
+    }
+
+    @Override
+    public void exitNumberExpr(ExprParser.NumberExprContext ctx) {
+        stack.push(Double.parseDouble(ctx.getText()));
+    }
+
+    @Override
+    public void exitUnaryMinusExpr(ExprParser.UnaryMinusExprContext ctx) {
+        double value = stack.pop();
+        stack.push(-value);
+    }
+
+    @Override
+    public void exitMulExpr(ExprParser.MulExprContext ctx) {
+        double right = stack.pop();
+        double left = stack.pop();
+        stack.push(left * right);
+    }
+
+    @Override
+    public void exitAddSubExpr(ExprParser.AddSubExprContext ctx) {
+        double right = stack.pop();
+        double left = stack.pop();
+
+        if (ctx.op.getText().equals("+")) {
+            stack.push(left + right);
+        } else {
+            stack.push(left - right);
+        }
+    }
+}
