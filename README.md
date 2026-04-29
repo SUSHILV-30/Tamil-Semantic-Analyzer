@@ -142,7 +142,7 @@ Semantic Status : ❌ INVALID
 
 <img src="Screenshots/parsetree1.png" width="45%"/>
 
-<img src="Screenshots/parse_tree2.png" width="45%"/>
+<img src="Screenshots/parsetree2.png" width="45%"/>
 
 <img src="Screenshots/parse_tree3.png" width="45%"/>
 
