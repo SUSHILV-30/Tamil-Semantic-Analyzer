@@ -218,8 +218,8 @@ java Main input.txt
 
 ## 👨‍💻 Team Members
 
-**|Sushil V|**
-**|Balaji Sakthivel|**
+**|Sushil V**
+**|Balaji Sakthivel**
 **|Shri Jayaram|**
 
 
