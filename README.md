@@ -216,11 +216,12 @@ java Main input.txt
 
 ---
 
-## 👨‍💻 Author
+## 👨‍💻 Team Members
 
 **Sushil V**
-🎓 3rd Year Engineering Student
-💻 Interested in NLP | Systems | Backend
+**Balaji Skthivel**
+**Shri Jayaram**
+
 
 ---
 
