@@ -140,15 +140,22 @@ Semantic Status : ❌ INVALID
 
 ## 🖼️ Visualization (GUI)
 
-![Image](https://images.openai.com/static-rsc-4/u9DTD8bwHqkg9RNocobNrgKCHqKn_Ifoy6FcipwIF2kjvGv8QxM5MdaeiebfTdpR4JWydi-M6avyFZXXa8G7wV9iXc8tsCKP3_rCWdGSenIlFhpinp9wF9RCaJ2_fMklp8QhGREe9Z7Ntmyu0juxTJkBEvsExM_kfnTqjpr7Y59XVa5-60L0KnqWszioK5uq?purpose=fullsize)
+<img src="Screenshots/parsetree1.png" width="45%"/>
 
-![Image](https://images.openai.com/static-rsc-4/TMbgumt8NJjvpkxnl_uc4v8JTvTasediLDVchOV_2m7xOA_PGlErYM7JsMw6P3y-OLyG7bG0eONymUzzqCtwZPRGCnk9nZ7L4aNMeKfBM5LNM6DMfGHAC0Qroc0VCLx9_2xw4EQEo8h_mQdXqe4pv4v3Eu3W_0xt2f1UtyfwAqENOQOsQFCvx7ZlVc8DXyRl?purpose=fullsize)
+<img src="Screenshots/parse_tree2.png" width="45%"/>
 
-![Image](https://images.openai.com/static-rsc-4/pIT7vD5Op3fcPGJ04P9F2xnC5N8Jw5THzxey0WWjYViN4fdzNd91y4Hv0oYft6hhRm1ZcLlW-BhMFl117YNEhol8cFYF2324cHdmhw3si5w0NgLixGYbxY32Az-EGJ2WtRTXavVjgkKW5doNYi4W3w1I4-mqGeWpcOEFvAQCrG2K7Y_tskw7R_tG8YrOWZze?purpose=fullsize)
+<img src="Screenshots/parse_tree3.png" width="45%"/>
 
-![Image](https://images.openai.com/static-rsc-4/WH5_dYkolXWaMAZpfCG0c_vf3rEQEaoP3kzOnTJHf2cstGjVGlIIun1RC_CtLUMI11HRts8rZtnLxQ6zMUorcqaLNvIriZHuXMmcTH43g5Db2_eJBI6S_PNmcMcgFZbBZqx2NiZ8jJ1Qr8Od8on4yzNvI7Kqn5pyvg7mbBlFf9C5uzbOB9G39POkkfQF_47l?purpose=fullsize)
+<img src="Screenshots/parse_tree4.png" width="45%"/>
 
-![Image](https://images.openai.com/static-rsc-4/cwgf4RIchmkgYdZGbW77mWOoImq7c6NLPPZupxFjJdY55iRTGojVHMT22fQmQgdcJYbG9lqsaD-Zh7Q3TAwzmr9DGjzzU5ufARJGg3IQK_4HlNwstec4boN4-Hg2J4jBjTF9w3Zn2kALwaOJhak-ynwNZtgqId79TM6CpkYfw6UrG6rIfrOotb1rAsq3Hap7?purpose=fullsize)
+<img src="Screenshots/parse_tree5.png" width="45%"/>
+
+<img src="Screenshots/parse_tree6.png" width="45%"/>
+
+<img src="Screenshots/parse_tree7.png" width="45%"/>
+
+<img src="Screenshots/parse_tree8.png" width="45%"/>
+
 
 ✔ Zoom In / Zoom Out
 ✔ Multi-tab sentence view
@@ -229,22 +236,9 @@ If you like this project:
 
 ## 📬 Connect With Me
 
-* GitHub: *(add your profile link here)*
-* LinkedIn: *(add your link)*
+* GitHub: *https://github.com/SUSHILV-30*
+
 
 ---
 
-## 🔥 BONUS (Resume Line)
 
-👉 *"Developed a Tamil Semantic Analyzer using ANTLR4 with custom grammar rules, enabling syntactic parsing and semantic validation of natural language sentences."*
-
----
-
-If you want next level upgrade 🔥
-I can:
-
-* Add **GitHub stats + contribution snake**
-* Create **project demo video script**
-* Help you explain this in **interview perfectly**
-
-Just tell 👍
