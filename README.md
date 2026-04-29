@@ -1,7 +1,3 @@
-Nice—let’s upgrade your README into a **🔥 pro-level GitHub README with badges, visuals, and clean formatting** (this is the kind that stands out in interviews 👇)
-
----
-
 # 🧠 Tamil Semantic Analyzer using ANTLR4
 
 ### 🚀 NLP | Compiler Design | Syntax + Semantic Analysis
