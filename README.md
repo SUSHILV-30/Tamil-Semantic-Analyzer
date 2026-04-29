@@ -144,17 +144,17 @@ Semantic Status : ❌ INVALID
 
 <img src="Screenshots/parsetree2.png" width="45%"/>
 
-<img src="Screenshots/parse_tree3.png" width="45%"/>
+<img src="Screenshots/parsetree3.png" width="45%"/>
 
-<img src="Screenshots/parse_tree4.png" width="45%"/>
+<img src="Screenshots/parsetree4.png" width="45%"/>
 
-<img src="Screenshots/parse_tree5.png" width="45%"/>
+<img src="Screenshots/parsetree5.png" width="45%"/>
 
-<img src="Screenshots/parse_tree6.png" width="45%"/>
+<img src="Screenshots/parsetree6.png" width="45%"/>
 
-<img src="Screenshots/parse_tree7.png" width="45%"/>
+<img src="Screenshots/parsetree7.png" width="45%"/>
 
-<img src="Screenshots/parse_tree8.png" width="45%"/>
+<img src="Screenshots/parsetree8.png" width="45%"/>
 
 
 ✔ Zoom In / Zoom Out
