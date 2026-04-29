@@ -218,9 +218,9 @@ java Main input.txt
 
 ## 👨‍💻 Team Members
 
-**Sushil V**
-**Balaji Skthivel**
-**Shri Jayaram**
+**|Sushil V|**
+**|Balaji Sakthivel|**
+**|Shri Jayaram|**
 
 
 ---
