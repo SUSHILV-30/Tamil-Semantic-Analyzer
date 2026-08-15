@@ -1,0 +1,1588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Tamil Semantic Analyzer — ANTLR4 NLP Project</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:       #0e0e0e;
+    --paper:     #f5f0e8;
+    --cream:     #ede7d9;
+    --accent:    #b5451b;
+    --accent2:   #1b5eb5;
+    --muted:     #6b6355;
+    --rule:      #c8bfaf;
+    --valid:     #1a6b3c;
+    --invalid:   #b5451b;
+    --code-bg:   #1c1a17;
+    --code-fg:   #e8e2d8;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.75;
+    overflow-x: hidden;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: var(--ink);
+    color: var(--paper);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 3rem;
+    height: 56px;
+    border-bottom: 1px solid #333;
+  }
+  .nav-brand {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.05rem;
+    letter-spacing: 0.03em;
+    color: var(--paper);
+    text-decoration: none;
+  }
+  .nav-links {
+    display: flex; gap: 2rem;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #aaa;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--paper); }
+
+  /* ─── HERO ─── */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 8rem 6rem 5rem;
+    position: relative;
+    background: var(--ink);
+    overflow: hidden;
+  }
+  .hero-grid-bg {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(245,240,232,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(245,240,232,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .hero-tamil-bg {
+    position: absolute;
+    top: -2rem; right: -3rem;
+    font-size: 22rem;
+    color: rgba(181,69,27,0.07);
+    font-family: 'DM Serif Display', serif;
+    pointer-events: none;
+    user-select: none;
+    line-height: 1;
+  }
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.4rem;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    display: inline-block;
+    width: 40px; height: 1px;
+    background: var(--accent);
+  }
+  .hero-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(3rem, 7vw, 6.5rem);
+    color: var(--paper);
+    line-height: 1.05;
+    max-width: 900px;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .hero-sub {
+    margin-top: 2rem;
+    color: #888;
+    font-size: 1rem;
+    max-width: 600px;
+    position: relative; z-index: 1;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.88rem;
+    line-height: 1.8;
+  }
+  .hero-cta-row {
+    margin-top: 3rem;
+    display: flex; gap: 1rem; align-items: center;
+    flex-wrap: wrap;
+    position: relative; z-index: 1;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.75rem 1.75rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+  }
+  .btn-primary:hover { background: #c95220; transform: translateY(-1px); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--paper);
+    border: 1px solid #444;
+  }
+  .btn-ghost:hover { border-color: #888; background: rgba(255,255,255,0.05); }
+
+  .badge-row {
+    margin-top: 3.5rem;
+    display: flex; gap: 0.75rem; flex-wrap: wrap;
+    position: relative; z-index: 1;
+  }
+  .badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    padding: 0.3rem 0.8rem;
+    border: 1px solid #333;
+    color: #666;
+    letter-spacing: 0.07em;
+  }
+  .badge.java   { border-color: #b5451b55; color: var(--accent); }
+  .badge.antlr  { border-color: #1b5eb555; color: var(--accent2); }
+  .badge.nlp    { border-color: #1a6b3c55; color: var(--valid); }
+  .badge.status { border-color: var(--valid); color: var(--valid); }
+
+  /* ─── SECTION COMMONS ─── */
+  section {
+    padding: 6rem 6rem;
+  }
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.5rem;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    max-width: 80px;
+    height: 1px;
+    background: var(--rule);
+  }
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    color: var(--ink);
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+  hr.divider {
+    border: none;
+    border-top: 1px solid var(--rule);
+    margin: 0 6rem;
+  }
+
+  /* ─── OVERVIEW ─── */
+  #overview { background: var(--cream); }
+  .overview-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    margin-top: 3.5rem;
+    align-items: start;
+  }
+  .overview-text p {
+    color: var(--muted);
+    margin-bottom: 1.25rem;
+    font-size: 1rem;
+  }
+  .overview-text p strong { color: var(--ink); }
+
+  .arch-flow {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 2rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+    line-height: 2;
+  }
+  .arch-flow .step {
+    display: flex; align-items: center; gap: 1rem;
+    padding: 0.3rem 0;
+  }
+  .arch-flow .step-num {
+    width: 24px; height: 24px;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.68rem;
+    flex-shrink: 0;
+  }
+  .arch-flow .step-label { color: #ccc; }
+  .arch-flow .step-arrow {
+    width: 1px; height: 20px;
+    background: #333;
+    margin-left: 12px;
+  }
+
+  /* ─── GRAMMAR ─── */
+  #grammar { background: var(--paper); }
+  .grammar-grid {
+    margin-top: 3.5rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+  }
+  .grammar-cell {
+    background: var(--paper);
+    padding: 2rem;
+  }
+  .grammar-cell h3 {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  pre.code-block {
+    background: var(--code-bg);
+    color: var(--code-fg);
+    padding: 1.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    line-height: 1.7;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .kw  { color: #e06c75; }
+  .str { color: #98c379; }
+  .cm  { color: #5c6370; font-style: italic; }
+  .fn  { color: #61afef; }
+  .punct { color: #abb2bf; }
+  .num  { color: #d19a66; }
+  .tamil-word { color: #e5c07b; }
+
+  /* ─── SEMANTIC RULES ─── */
+  #rules { background: var(--ink); color: var(--paper); }
+  #rules .section-title { color: var(--paper); }
+  #rules .section-label { color: #555; }
+  .rules-table-wrap { margin-top: 3.5rem; overflow-x: auto; }
+  table.rules-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+  table.rules-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #555;
+    padding: 0.75rem 1.5rem;
+    text-align: left;
+    border-bottom: 1px solid #222;
+  }
+  table.rules-table td {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #1a1a1a;
+    vertical-align: top;
+  }
+  table.rules-table tr:last-child td { border-bottom: none; }
+  table.rules-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .pronoun-cell {
+    font-family: 'DM Mono', monospace;
+    font-size: 1.1rem;
+    color: #e5c07b;
+    font-weight: 500;
+  }
+  .meaning-cell { color: #888; font-size: 0.88rem; }
+  .rule-cell {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+    color: #98c379;
+  }
+  .ending-cell {
+    font-family: 'DM Mono', monospace;
+    font-size: 1rem;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+
+  /* ─── SAMPLES ─── */
+  #samples { background: var(--cream); }
+  .samples-intro {
+    color: var(--muted);
+    margin: 1.5rem 0 3rem;
+    max-width: 600px;
+  }
+  .sample-tabs {
+    display: flex; gap: 0; margin-bottom: 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .tab-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.75rem 1.75rem;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    color: var(--muted);
+    transition: all 0.2s;
+    margin-bottom: -1px;
+  }
+  .tab-btn.active {
+    color: var(--ink);
+    border-bottom-color: var(--accent);
+  }
+  .tab-content { display: none; padding-top: 2.5rem; }
+  .tab-content.active { display: block; }
+
+  .sentence-card {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.25rem 1.5rem;
+    border: 1px solid var(--rule);
+    margin-bottom: 0.75rem;
+    background: var(--paper);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .sentence-card:hover {
+    transform: translateX(4px);
+    box-shadow: -4px 0 0 var(--accent);
+  }
+  .sentence-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--rule);
+    min-width: 28px;
+  }
+  .sentence-text {
+    font-size: 1.1rem;
+    line-height: 1.4;
+    color: var(--ink);
+  }
+  .sentence-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .status-valid {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    color: var(--valid);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+  }
+  .status-invalid {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    color: var(--invalid);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+  }
+  .dot { width: 6px; height: 6px; border-radius: 50%; }
+  .dot.valid { background: var(--valid); }
+  .dot.invalid { background: var(--invalid); }
+
+  /* ─── PARSE TREE OUTPUT ─── */
+  #output { background: var(--paper); }
+  .output-grid {
+    margin-top: 3.5rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+  .output-block h3 {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .terminal-block {
+    background: var(--code-bg);
+    padding: 1.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    line-height: 1.9;
+    color: var(--code-fg);
+    position: relative;
+  }
+  .terminal-block .t-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #444;
+    position: absolute;
+    top: 0.75rem; right: 1rem;
+  }
+  .t-tree { color: #888; }
+  .t-subject { color: #e5c07b; }
+  .t-verb    { color: #61afef; }
+  .t-valid   { color: #98c379; }
+  .t-invalid { color: #e06c75; }
+  .t-error   { color: #e06c75; }
+  .t-token   { color: var(--accent); }
+  .t-type    { color: #c678dd; }
+  .t-head    { color: #aaa; }
+  .t-border  { color: #333; }
+  .t-num     { color: #d19a66; }
+
+  /* ─── DEMO WIDGET ─── */
+  #demo { background: var(--cream); }
+  .demo-wrap {
+    margin-top: 3.5rem;
+    max-width: 780px;
+  }
+  .demo-desc {
+    color: var(--muted);
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+  }
+  .input-area {
+    display: flex; gap: 0;
+    border: 1px solid var(--rule);
+    overflow: hidden;
+  }
+  .demo-input {
+    flex: 1;
+    padding: 1rem 1.25rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.9rem;
+    background: var(--paper);
+    border: none;
+    outline: none;
+    color: var(--ink);
+  }
+  .demo-input::placeholder { color: #b0a898; }
+  .demo-run-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 0 1.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+  .demo-run-btn:hover { background: #c95220; }
+  .quick-samples {
+    display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.75rem;
+  }
+  .qs-btn {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    padding: 0.35rem 0.85rem;
+    background: none;
+    border: 1px solid var(--rule);
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .qs-btn:hover { border-color: var(--accent); color: var(--ink); }
+  .demo-result {
+    margin-top: 1.5rem;
+    background: var(--code-bg);
+    padding: 1.5rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+    line-height: 2;
+    color: var(--code-fg);
+    min-height: 140px;
+    display: none;
+  }
+  .demo-result.visible { display: block; }
+
+  /* ─── TECH STACK ─── */
+  #tech { background: var(--paper); }
+  .tech-grid {
+    margin-top: 3.5rem;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+  }
+  .tech-card {
+    border: 1px solid var(--rule);
+    padding: 2rem 1.5rem;
+    position: relative;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .tech-card:hover { border-color: var(--ink); transform: translateY(-3px); }
+  .tech-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+  .tech-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+  .tech-desc {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .tech-version {
+    position: absolute;
+    top: 1rem; right: 1rem;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--rule);
+    letter-spacing: 0.08em;
+  }
+
+  /* ─── RESULTS ─── */
+  #results { background: var(--cream); }
+  .results-grid {
+    margin-top: 3.5rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+  }
+  .result-card {
+    background: var(--paper);
+    padding: 3rem 2.5rem;
+    text-align: center;
+  }
+  .result-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 4rem;
+    color: var(--ink);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+  .result-num.accent { color: var(--accent); }
+  .result-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ─── TEAM ─── */
+  #team { background: var(--ink); color: var(--paper); }
+  #team .section-title { color: var(--paper); }
+  #team .section-label { color: #444; }
+  .team-grid {
+    margin-top: 3.5rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  .team-card {
+    border: 1px solid #222;
+    padding: 2.5rem 2rem;
+    transition: border-color 0.2s;
+  }
+  .team-card:hover { border-color: var(--accent); }
+  .team-initials {
+    width: 56px; height: 56px;
+    background: var(--accent);
+    color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+  }
+  .team-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.2rem;
+    color: var(--paper);
+    margin-bottom: 0.35rem;
+  }
+  .team-role {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #555;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--ink);
+    color: #444;
+    padding: 3rem 6rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid #1a1a1a;
+  }
+  footer .footer-brand {
+    font-family: 'DM Serif Display', serif;
+    font-size: 0.9rem;
+    color: #666;
+  }
+  footer .footer-info {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-align: right;
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .hero-eyebrow { animation: fadeUp 0.6s ease forwards; }
+  .hero-title   { animation: fadeUp 0.6s 0.15s ease both; }
+  .hero-sub     { animation: fadeUp 0.6s 0.3s ease both; }
+  .hero-cta-row { animation: fadeUp 0.6s 0.45s ease both; }
+  .badge-row    { animation: fadeUp 0.6s 0.6s ease both; }
+
+  /* ─── SCROLL REVEAL ─── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 1024px) {
+    section { padding: 5rem 3rem; }
+    hr.divider { margin: 0 3rem; }
+    #hero { padding: 7rem 3rem 4rem; }
+    nav { padding: 0 2rem; }
+    footer { padding: 2rem 3rem; }
+    .overview-grid, .grammar-grid, .output-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+    .tech-grid { grid-template-columns: repeat(2, 1fr); }
+    .results-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 680px) {
+    nav { padding: 0 1.25rem; }
+    .nav-links { display: none; }
+    section { padding: 4rem 1.5rem; }
+    #hero { padding: 6rem 1.5rem 3rem; }
+    footer { flex-direction: column; gap: 1rem; padding: 2rem 1.5rem; }
+    footer .footer-info { text-align: left; }
+    .hero-title { font-size: 2.5rem; }
+    .tech-grid { grid-template-columns: 1fr; }
+    .team-grid { grid-template-columns: 1fr; }
+    .grammar-grid { grid-template-columns: 1fr; }
+    hr.divider { margin: 0 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-brand">Tamil Semantic Analyzer</a>
+  <ul class="nav-links">
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#grammar">Grammar</a></li>
+    <li><a href="#rules">Rules</a></li>
+    <li><a href="#samples">Samples</a></li>
+    <li><a href="#demo">Demo</a></li>
+    <li><a href="#team">Team</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="hero-tamil-bg">த</div>
+
+  <p class="hero-eyebrow">Final Year Project · ANTLR4 · NLP</p>
+
+  <h1 class="hero-title">
+    Tamil<br/>
+    <em>Semantic</em><br/>
+    Analyzer
+  </h1>
+
+  <p class="hero-sub">
+    A formal grammar-driven semantic analysis engine for Tamil sentences —<br/>
+    built with ANTLR4, Java, and custom parse-tree visualization.
+  </p>
+
+  <div class="hero-cta-row">
+    <a href="#demo" class="btn btn-primary">Try the Analyzer →</a>
+    <a href="#overview" class="btn btn-ghost">Explore Project</a>
+  </div>
+
+  <div class="badge-row">
+    <span class="badge java">Java 17</span>
+    <span class="badge antlr">ANTLR4</span>
+    <span class="badge nlp">NLP</span>
+    <span class="badge nlp">Eclipse IDE</span>
+    <span class="badge status">✓ Completed</span>
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- OVERVIEW -->
+<section id="overview">
+  <p class="section-label">What we built</p>
+  <h2 class="section-title">An end-to-end pipeline<br/>for Tamil language analysis</h2>
+
+  <div class="overview-grid">
+    <div class="overview-text reveal">
+      <p>
+        This project implements a <strong>full-stack semantic analyzer</strong> for the Tamil language — one of the world's oldest classical languages — using the ANTLR4 parser generator framework.
+      </p>
+      <p>
+        Starting from raw Tamil text, the system tokenizes input via a hand-crafted lexer, constructs a concrete syntax tree through a formal grammar, and performs <strong>semantic validation</strong> by enforcing subject–verb agreement rules rooted in Tamil grammar.
+      </p>
+      <p>
+        A key challenge was encoding Tamil's agglutinative morphology into formal grammar rules — the same verb stem carries different suffixes depending on the gender, number, and person of the subject. We mapped these rules exhaustively into ANTLR4 grammar actions.
+      </p>
+      <p>
+        The project ships with a <strong>Swing-based GUI parse tree viewer</strong> with multi-tab navigation, zoom controls, and per-sentence analysis — all running off a single Java executable.
+      </p>
+    </div>
+
+    <div class="arch-flow reveal">
+      <div style="font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:#555;margin-bottom:1.5rem;">Architecture Flow</div>
+      <div class="step">
+        <span class="step-num">1</span>
+        <span class="step-label">Input Sentence (Tamil UTF-8 text)</span>
+      </div>
+      <div class="step-arrow"></div>
+      <div class="step">
+        <span class="step-num">2</span>
+        <span class="step-label">Lexer — Tokenization via TamilLexer.g4</span>
+      </div>
+      <div class="step-arrow"></div>
+      <div class="step">
+        <span class="step-num">3</span>
+        <span class="step-label">Parser — Grammar rules in Tamil.g4</span>
+      </div>
+      <div class="step-arrow"></div>
+      <div class="step">
+        <span class="step-num">4</span>
+        <span class="step-label">Parse Tree Construction (ANTLR4 runtime)</span>
+      </div>
+      <div class="step-arrow"></div>
+      <div class="step">
+        <span class="step-num">5</span>
+        <span class="step-label">Semantic Validator — Agreement checker</span>
+      </div>
+      <div class="step-arrow"></div>
+      <div class="step">
+        <span class="step-num">6</span>
+        <span class="step-label">Output — VALID / INVALID + explanation</span>
+      </div>
+      <div class="step-arrow"></div>
+      <div class="step">
+        <span class="step-num">7</span>
+        <span class="step-label">Swing GUI — Interactive parse tree viewer</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- GRAMMAR -->
+<section id="grammar">
+  <p class="section-label">Technical design</p>
+  <h2 class="section-title">Grammar &amp; Semantic<br/>Rule Implementation</h2>
+
+  <div class="grammar-grid reveal">
+    <div class="grammar-cell">
+      <h3>Parser Grammar — Tamil.g4</h3>
+      <pre class="code-block"><span class="cm">// Top-level rule</span>
+<span class="fn">file</span>
+    : <span class="kw">sentence</span> EOF
+    ;
+
+<span class="fn">sentence</span>
+    : QUESTION_WORD? <span class="kw">clause</span>
+      (LINK_WORD <span class="kw">clause</span>)*
+      (PUNCT | QUESTION_MARK)?
+    ;
+
+<span class="cm">// Clause with subject → validates agreement</span>
+<span class="fn">clause</span>
+    : <span class="kw">subject</span> object* adverb* <span class="kw">verbPhrase</span>
+      {
+        checkAgreement(
+          $subject.textVal,
+          $verbPhrase.verbVal,
+          $ctx.getParent().getText()
+        );
+      }
+    | object* adverb* <span class="kw">verbPhrase</span>
+    ;
+
+<span class="fn">subject</span> returns [String textVal]
+    : ADJ* PRONOUN    { $textVal = $PRONOUN.getText(); }
+    | ADJ* TAMIL_WORD { $textVal = $TAMIL_WORD.getText(); }
+    ;</pre>
+    </div>
+
+    <div class="grammar-cell">
+      <h3>Semantic Checker — Java Action</h3>
+      <pre class="code-block"><span class="kw">void</span> <span class="fn">checkAgreement</span>(
+    String subj, String verb, String sent) {
+
+  <span class="kw">if</span> (verb == <span class="kw">null</span>) {
+    semanticError(sent, <span class="str">"No verb found."</span>);
+    <span class="kw">return</span>;
+  }
+
+  <span class="cm">// நான் → verb must end ேன்</span>
+  <span class="kw">if</span> (isFirstPerson(subj)) {
+    <span class="kw">if</span> (!isFirstPersonVerb(verb))
+      semanticError(sent,
+        <span class="str">"'நான்' needs verb ending 'ேன்'"</span>);
+    <span class="kw">return</span>;
+  }
+
+  <span class="cm">// அவர்கள் → plural verb (ார்கள் / ினர்)</span>
+  <span class="kw">if</span> (isPluralPronoun(subj)) {
+    <span class="kw">if</span> (!isPluralVerb(verb))
+      semanticError(sent,
+        <span class="str">"Plural subject needs plural verb."</span>);
+    <span class="kw">return</span>;
+  }
+
+  <span class="cm">// Noun gender → ending ன் / ள் maps to ான் / ாள்</span>
+  <span class="kw">if</span> (isMaleNoun(subj) &amp;&amp; !isMaleVerb(verb))
+    semanticError(sent, <span class="str">"Masculine noun → 'ான்'"</span>);
+}</pre>
+    </div>
+
+    <div class="grammar-cell">
+      <h3>Lexer Rules — Key Tokens</h3>
+      <pre class="code-block"><span class="cm">// Pronouns</span>
+<span class="fn">PRONOUN</span>
+    : <span class="tamil-word">'நான்'</span>     <span class="cm">// I (1st person)</span>
+    | <span class="tamil-word">'நாங்கள்'</span> <span class="cm">// We (plural)</span>
+    | <span class="tamil-word">'அவன்'</span>    <span class="cm">// He (male)</span>
+    | <span class="tamil-word">'அவள்'</span>    <span class="cm">// She (female)</span>
+    | <span class="tamil-word">'அவர்கள்'</span> <span class="cm">// They (plural)</span>
+    ;
+
+<span class="cm">// Tense + Agreement suffixes</span>
+<span class="fn">TENSE_SUFFIX</span>
+    : <span class="tamil-word">'வந்தேன்'</span>    <span class="cm">// came (I)</span>
+    | <span class="tamil-word">'வந்தான்'</span>    <span class="cm">// came (he)</span>
+    | <span class="tamil-word">'வந்தாள்'</span>    <span class="cm">// came (she)</span>
+    | <span class="tamil-word">'வந்தார்கள்'</span> <span class="cm">// came (they)</span>
+    | <span class="tamil-word">'சென்றோம்'</span>   <span class="cm">// went (we)</span>
+    <span class="cm">// …28 total verb forms</span>
+    ;
+
+<span class="cm">// General Tamil word fragment</span>
+<span class="fn">TAMIL_WORD</span>
+    : (TAMIL_CLUSTER)+
+    ;
+
+fragment <span class="fn">TAMIL_BASE</span>
+    : [<span class="num">\u0B85-\u0BB9</span>]
+    ;</pre>
+    </div>
+
+    <div class="grammar-cell">
+      <h3>Console Output — Sentence Analysis</h3>
+      <pre class="code-block"><span class="t-head">══════════════════════════════════════
+  Sentence 1 : </span><span class="tamil-word">ராஜா புதிய புத்தகம் படித்தார்.</span>
+<span class="t-head">══════════════════════════════════════</span>
+
+<span class="t-head">  --- Parse Tree ---</span>
+  <span class="t-tree">file</span>
+    <span class="t-tree">sentence</span>
+      <span class="t-tree">clause</span>
+        <span class="t-tree">subject</span>
+          <span class="t-subject">TAMIL_WORD: 'ராஜா'</span>
+        <span class="t-tree">object</span>
+          <span class="t-tree">nounPhrase</span>
+            <span class="t-token">ADJ:       'புதிய'</span>
+            <span class="t-subject">TAMIL_WORD:'புத்தகம்'</span>
+        <span class="t-tree">verbPhrase</span>
+          <span class="t-verb">TENSE_SUFFIX:'படித்தார்'</span>
+
+<span class="t-head">  --- Semantic Analysis ---</span>
+  Subject : <span class="t-subject">ராஜா</span>
+  Verb    : <span class="t-verb">படித்தார்</span>
+  Status  : <span class="t-valid">✓ VALID</span></pre>
+    </div>
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- SEMANTIC RULES -->
+<section id="rules">
+  <p class="section-label">Core logic</p>
+  <h2 class="section-title">Subject–Verb Agreement<br/>Rules Implemented</h2>
+
+  <div class="rules-table-wrap reveal">
+    <table class="rules-table">
+      <thead>
+        <tr>
+          <th>Subject</th>
+          <th>Person / Gender</th>
+          <th>Rule</th>
+          <th>Valid Verb Ending</th>
+          <th>Example Violation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="pronoun-cell">நான்</td>
+          <td class="meaning-cell">1st person singular (I)</td>
+          <td class="rule-cell">isFirstPersonVerb(v)</td>
+          <td class="ending-cell">—ேன்</td>
+          <td class="meaning-cell">நான் வந்தான் ❌</td>
+        </tr>
+        <tr>
+          <td class="pronoun-cell">நாங்கள்</td>
+          <td class="meaning-cell">1st person plural (We)</td>
+          <td class="rule-cell">isFirstPersonPluralVerb(v)</td>
+          <td class="ending-cell">—ோம்</td>
+          <td class="meaning-cell">நாங்கள் வந்தேன் ❌</td>
+        </tr>
+        <tr>
+          <td class="pronoun-cell">அவர்கள்</td>
+          <td class="meaning-cell">3rd person plural (They)</td>
+          <td class="rule-cell">isPluralVerb(v)</td>
+          <td class="ending-cell">—ார்கள் / —ினர்</td>
+          <td class="meaning-cell">அவர்கள் வந்தான் ❌</td>
+        </tr>
+        <tr>
+          <td class="pronoun-cell">அவன்</td>
+          <td class="meaning-cell">3rd person male (He)</td>
+          <td class="rule-cell">isMaleVerb(v)</td>
+          <td class="ending-cell">—ான்</td>
+          <td class="meaning-cell">அவன் வந்தார்கள் ❌</td>
+        </tr>
+        <tr>
+          <td class="pronoun-cell">அவள்</td>
+          <td class="meaning-cell">3rd person female (She)</td>
+          <td class="rule-cell">isFemaleVerb(v)</td>
+          <td class="ending-cell">—ாள்</td>
+          <td class="meaning-cell">அவள் வந்தான் ❌</td>
+        </tr>
+        <tr>
+          <td class="pronoun-cell" style="font-size:0.85rem;">Noun ends ன்</td>
+          <td class="meaning-cell">Masculine noun (e.g. ராஜன்)</td>
+          <td class="rule-cell">isMaleNoun(s) → isMaleVerb(v)</td>
+          <td class="ending-cell">—ான்</td>
+          <td class="meaning-cell">ராஜன் வந்தாள் ❌</td>
+        </tr>
+        <tr>
+          <td class="pronoun-cell" style="font-size:0.85rem;">Noun ends ள்</td>
+          <td class="meaning-cell">Feminine noun (e.g. கமலா)</td>
+          <td class="rule-cell">isFemaleNoun(s) → isFemaleVerb(v)</td>
+          <td class="ending-cell">—ாள்</td>
+          <td class="meaning-cell">கமலா வந்தான் ❌</td>
+        </tr>
+        <tr>
+          <td class="pronoun-cell" style="font-size:0.85rem;">Neutral noun</td>
+          <td class="meaning-cell">Common / proper nouns, places</td>
+          <td class="rule-cell">No pronoun match → no violation</td>
+          <td class="ending-cell">—ார் (honorific)</td>
+          <td class="meaning-cell">ராஜா படித்தார் ✓</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<hr class="divider" style="margin:0 6rem; border-color:#1a1a1a;"/>
+
+<!-- SAMPLE SENTENCES -->
+<section id="samples">
+  <p class="section-label">Test dataset</p>
+  <h2 class="section-title">Sample Sentences &amp;<br/>Expected Output</h2>
+  <p class="samples-intro">
+    The analyzer was tested against 50+ Tamil sentences spanning simple declaratives, compound sentences, questions, and numeric constructs.
+  </p>
+
+  <div class="sample-tabs reveal">
+    <button class="tab-btn active" onclick="switchTab(this,'valid')">✓ Valid Sentences</button>
+    <button class="tab-btn" onclick="switchTab(this,'invalid')">✗ Invalid Sentences</button>
+    <button class="tab-btn" onclick="switchTab(this,'questions')">? Questions</button>
+    <button class="tab-btn" onclick="switchTab(this,'compound')">⊕ Compound</button>
+  </div>
+
+  <div id="tab-valid" class="tab-content active">
+    <div class="sentence-card">
+      <span class="sentence-num">01</span>
+      <div>
+        <div class="sentence-text">ராஜா புதிய புத்தகம் படித்தார்.</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.72rem;color:#888;margin-top:0.3rem;">Raja read a new book. — Subject: ராஜா, Verb: படித்தார் (honorific)</div>
+      </div>
+      <span class="status-valid"><span class="dot valid"></span>VALID</span>
+    </div>
+    <div class="sentence-card">
+      <span class="sentence-num">02</span>
+      <div>
+        <div class="sentence-text">அவன் வேகமாக ஓடினான்.</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.72rem;color:#888;margin-top:0.3rem;">He ran fast. — அவன் (male pronoun) + verb ending ான் ✓</div>
+      </div>
+      <span class="status-valid"><span class="dot valid"></span>VALID</span>
+    </div>
+    <div class="sentence-card">
+      <span class="sentence-num">03</span>
+      <div>
+        <div class="sentence-text">அழகான பூ உள்ளது.</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.72rem;color:#888;margin-top:0.3rem;">There is a beautiful flower. — ADJ + neuter noun + neutral verb</div>
+      </div>
+      <span class="status-valid"><span class="dot valid"></span>VALID</span>
+    </div>
+    <div class="sentence-card">
+      <span class="sentence-num">04</span>
+      <div>
+        <div class="sentence-text">நான் ௧௨௩ பழங்கள் சாப்பிட்டேன்.</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.72rem;color:#888;margin-top:0.3rem;">I ate 123 fruits. — Tamil numeral, 1st person pronoun + ேன் verb ✓</div>
+      </div>
+      <span class="status-valid"><span class="dot valid"></span>VALID</span>
+    </div>
+    <div class="sentence-card">
+      <span class="sentence-num">05</span>
+      <div>
+        <div class="sentence-text">மரத்தின் மீது பறவை உள்ளது.</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.72rem;color:#888;margin-top:0.3rem;">A bird is on the tree. — Postposition phrase + neutral verb</div>
+      </div>
+      <span class="status-valid"><span class="dot valid"></span>VALID</span>
+    </div>
+  </div>
+
+  <div id="tab-invalid" class="tab-content">
+    <div class="sentence-card" style="border-left: 3px solid var(--invalid);">
+      <span class="sentence-num">01</span>
+      <div>
+        <div class="sentence-text">நான் வந்தார்கள்.</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.72rem;color:#888;margin-top:0.3rem;">Error: 'நான்' must use verb ending 'ேன்' — plural verb given to singular 1st person</div>
+      </div>
+      <span class="status-invalid"><span class="dot invalid"></span>INVALID</span>
+    </div>
+    <div class="sentence-card" style="border-left: 3px solid var(--invalid);">
+      <span class="sentence-num">02</span>
+      <div>
+        <div class="sentence-text">அவன் வந்தார்கள்.</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.72rem;color:#888;margin-top:0.3rem;">Error: 'அவன்' (he) must use verb ending 'ான்' — plural verb is wrong</div>
+      </div>
+      <span class="status-invalid"><span class="dot invalid"></span>INVALID</span>
+    </div>
+    <div class="sentence-card" style="border-left: 3px solid var(--invalid);">
+      <span class="sentence-num">03</span>
+      <div>
+        <div class="sentence-text">அவர்கள் வந்தான்.</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.72rem;color:#888;margin-top:0.3rem;">Error: Plural subject must use plural verb — singular male verb used</div>
+      </div>
+      <span class="status-invalid"><span class="dot invalid"></span>INVALID</span>
+    </div>
+    <div class="sentence-card" style="border-left: 3px solid var(--invalid);">
+      <span class="sentence-num">04</span>
+      <div>
+        <div class="sentence-text">நாங்கள் வந்தான்.</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.72rem;color:#888;margin-top:0.3rem;">Error: 'நாங்கள்' (we) needs verb ending 'ோம்' — male singular verb given</div>
+      </div>
+      <span class="status-invalid"><span class="dot invalid"></span>INVALID</span>
+    </div>
+  </div>
+
+  <div id="tab-questions" class="tab-content">
+    <div class="sentence-card">
+      <span class="sentence-num">Q1</span>
+      <div>
+        <div class="sentence-text">எப்படி வந்தான்?</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.72rem;color:#888;margin-top:0.3rem;">How did he come? — QUESTION_WORD token + verbPhrase, no subject → no violation</div>
+      </div>
+      <span class="status-valid"><span class="dot valid"></span>PARSED</span>
+    </div>
+    <div class="sentence-card">
+      <span class="sentence-num">Q2</span>
+      <div>
+        <div class="sentence-text">எப்போது தொடங்கும்?</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.72rem;color:#888;margin-top:0.3rem;">When will it start? — Question word + future-tense verb</div>
+      </div>
+      <span class="status-valid"><span class="dot valid"></span>PARSED</span>
+    </div>
+    <div class="sentence-card">
+      <span class="sentence-num">Q3</span>
+      <div>
+        <div class="sentence-text">ஏன் நீ வந்தில்லை?</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.72rem;color:#888;margin-top:0.3rem;">Why didn't you come? — Negative verb form handled</div>
+      </div>
+      <span class="status-valid"><span class="dot valid"></span>PARSED</span>
+    </div>
+  </div>
+
+  <div id="tab-compound" class="tab-content">
+    <div class="sentence-card">
+      <span class="sentence-num">C1</span>
+      <div>
+        <div class="sentence-text">அழகான சிறுவன் பள்ளிக்கு சென்றான் ஆனால் அவன் மெல்ல நடந்தான்.</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.72rem;color:#888;margin-top:0.3rem;">Compound sentence — LINK_WORD 'ஆனால்' joins two clauses; both validated independently</div>
+      </div>
+      <span class="status-valid"><span class="dot valid"></span>VALID</span>
+    </div>
+    <div class="sentence-card">
+      <span class="sentence-num">C2</span>
+      <div>
+        <div class="sentence-text">நல்ல படிப்பு வேண்டும்.</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.72rem;color:#888;margin-top:0.3rem;">Good education is needed. — Subjectless clause, modal verb, no agreement check required</div>
+      </div>
+      <span class="status-valid"><span class="dot valid"></span>VALID</span>
+    </div>
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- PARSE TREE OUTPUT -->
+<section id="output">
+  <p class="section-label">System output</p>
+  <h2 class="section-title">Console &amp; Semantic<br/>Analysis Output</h2>
+
+  <div class="output-grid reveal">
+    <div class="output-block">
+      <h3>Valid sentence — Full output trace</h3>
+      <div class="terminal-block">
+        <span class="t-label">CONSOLE</span>
+        <div><span class="t-border">══════════════════════════════════════</span></div>
+        <div>  Sentence <span class="t-num">3</span> : <span class="tamil-word">அவன் 25 மிட்டாய் வாங்கினான்.</span></div>
+        <div><span class="t-border">══════════════════════════════════════</span></div>
+        <div>&nbsp;</div>
+        <div><span class="t-head">  --- Parse Tree (Console) ---</span></div>
+        <div>  <span class="t-tree">file</span></div>
+        <div>    <span class="t-tree">sentence</span></div>
+        <div>      <span class="t-tree">clause</span></div>
+        <div>        <span class="t-tree">subject</span></div>
+        <div>          <span class="t-subject">PRONOUN : 'அவன்'</span></div>
+        <div>        <span class="t-tree">object</span></div>
+        <div>          <span class="t-token">NUMBER  : '25'</span></div>
+        <div>        <span class="t-tree">object</span></div>
+        <div>          <span class="t-tree">nounPhrase</span></div>
+        <div>            <span class="t-subject">TAMIL_WORD: 'மிட்டாய்'</span></div>
+        <div>        <span class="t-tree">verbPhrase</span></div>
+        <div>          <span class="t-verb">TENSE_SUFFIX: 'வாங்கினான்'</span></div>
+        <div>&nbsp;</div>
+        <div><span class="t-head">  --- Semantic Analysis ---</span></div>
+        <div>  Subject : <span class="t-subject">அவன்</span></div>
+        <div>  Verb    : <span class="t-verb">வாங்கினான்</span></div>
+        <div>  Status  : <span class="t-valid">✓  VALID</span></div>
+        <div>&nbsp;</div>
+        <div><span class="t-head">  --- Tokens ---</span></div>
+        <div>  <span class="t-type">PRONOUN</span>      → <span class="tamil-word">அவன்</span></div>
+        <div>  <span class="t-type">NUMBER</span>       → <span class="t-num">25</span></div>
+        <div>  <span class="t-type">TAMIL_WORD</span>   → <span class="tamil-word">மிட்டாய்</span></div>
+        <div>  <span class="t-type">TENSE_SUFFIX</span> → <span class="t-verb">வாங்கினான்</span></div>
+        <div>  <span class="t-type">PUNCT</span>        → <span class="t-token">.</span></div>
+      </div>
+    </div>
+
+    <div class="output-block">
+      <h3>Invalid sentence — Error detection</h3>
+      <div class="terminal-block">
+        <span class="t-label">CONSOLE</span>
+        <div><span class="t-border">══════════════════════════════════════</span></div>
+        <div>  Sentence <span class="t-num">7</span> : <span class="tamil-word">நான் வந்தார்கள்.</span></div>
+        <div><span class="t-border">══════════════════════════════════════</span></div>
+        <div>&nbsp;</div>
+        <div><span class="t-head">  --- Parse Tree (Console) ---</span></div>
+        <div>  <span class="t-tree">file</span></div>
+        <div>    <span class="t-tree">sentence</span></div>
+        <div>      <span class="t-tree">clause</span></div>
+        <div>        <span class="t-tree">subject</span></div>
+        <div>          <span class="t-subject">PRONOUN : 'நான்'</span></div>
+        <div>        <span class="t-tree">verbPhrase</span></div>
+        <div>          <span class="t-verb">TENSE_SUFFIX: 'வந்தார்கள்'</span></div>
+        <div>&nbsp;</div>
+        <div><span class="t-head">  --- Semantic Analysis ---</span></div>
+        <div>  Subject : <span class="t-subject">நான்</span></div>
+        <div>  Verb    : <span class="t-verb">வந்தார்கள்</span></div>
+        <div>&nbsp;</div>
+        <div><span class="t-error">Semantic Error in sentence:</span></div>
+        <div><span class="t-error">'நான்' must use verb ending 'ேன்'.</span></div>
+        <div>&nbsp;</div>
+        <div>  Status  : <span class="t-invalid">✗  INVALID</span></div>
+        <div>&nbsp;</div>
+        <div><span class="t-head">  --- Tokens ---</span></div>
+        <div>  <span class="t-type">PRONOUN</span>      → <span class="tamil-word">நான்</span></div>
+        <div>  <span class="t-type">TENSE_SUFFIX</span> → <span class="t-verb">வந்தார்கள்</span></div>
+        <div>  <span class="t-type">PUNCT</span>        → <span class="t-token">.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- INTERACTIVE DEMO -->
+<section id="demo">
+  <p class="section-label">Try it out</p>
+  <h2 class="section-title">Interactive Semantic<br/>Analyzer Demo</h2>
+
+  <div class="demo-wrap reveal">
+    <p class="demo-desc">
+      Enter a Tamil sentence to simulate the semantic analysis. The engine checks subject–verb agreement using the same rules implemented in the Java parser.
+    </p>
+
+    <div class="input-area">
+      <input type="text" class="demo-input" id="demoInput"
+        placeholder="Enter a Tamil sentence, e.g.  நான் வந்தேன்."
+        value=""/>
+      <button class="demo-run-btn" onclick="runDemo()">Analyze →</button>
+    </div>
+
+    <div class="quick-samples">
+      <span style="font-family:'DM Mono',monospace;font-size:0.7rem;color:#aaa;align-self:center;margin-right:0.25rem;">Try:</span>
+      <button class="qs-btn" onclick="setAndRun('நான் வந்தேன்.')">நான் வந்தேன்.</button>
+      <button class="qs-btn" onclick="setAndRun('அவன் வந்தார்கள்.')">அவன் வந்தார்கள்.</button>
+      <button class="qs-btn" onclick="setAndRun('அவர்கள் வந்தார்கள்.')">அவர்கள் வந்தார்கள்.</button>
+      <button class="qs-btn" onclick="setAndRun('நாங்கள் சென்றோம்.')">நாங்கள் சென்றோம்.</button>
+      <button class="qs-btn" onclick="setAndRun('நான் வந்தான்.')">நான் வந்தான். ❌</button>
+      <button class="qs-btn" onclick="setAndRun('அவள் வந்தான்.')">அவள் வந்தான். ❌</button>
+    </div>
+
+    <div class="demo-result" id="demoResult"></div>
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- TECH STACK -->
+<section id="tech">
+  <p class="section-label">Built with</p>
+  <h2 class="section-title">Technology Stack</h2>
+
+  <div class="tech-grid reveal">
+    <div class="tech-card">
+      <span class="tech-icon">☕</span>
+      <span class="tech-version">JDK 17</span>
+      <div class="tech-name">Java</div>
+      <div class="tech-desc">Core implementation language. Grammar actions, semantic checker, Swing GUI, and main execution logic all written in Java.</div>
+    </div>
+    <div class="tech-card">
+      <span class="tech-icon">⚙️</span>
+      <span class="tech-version">4.13.2</span>
+      <div class="tech-name">ANTLR4</div>
+      <div class="tech-desc">Parser generator that converts the .g4 grammar specification into a working lexer and parser at compile time.</div>
+    </div>
+    <div class="tech-card">
+      <span class="tech-icon">🖥️</span>
+      <span class="tech-version">2023</span>
+      <div class="tech-name">Eclipse IDE</div>
+      <div class="tech-desc">Development environment with ANTLR4 IDE plugin for grammar development, syntax highlighting, and project management.</div>
+    </div>
+    <div class="tech-card">
+      <span class="tech-icon">🌳</span>
+      <span class="tech-version">Built-in</span>
+      <div class="tech-name">Swing GUI</div>
+      <div class="tech-desc">Java Swing TreeViewer from ANTLR4 runtime provides interactive parse tree visualization with zoom, tabs, and scroll support.</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- RESULTS -->
+<section id="results">
+  <p class="section-label">Project outcomes</p>
+  <h2 class="section-title">What was achieved</h2>
+
+  <div class="results-grid reveal">
+    <div class="result-card">
+      <div class="result-num accent">50+</div>
+      <div class="result-label">Tamil sentences parsed successfully</div>
+    </div>
+    <div class="result-card">
+      <div class="result-num">8</div>
+      <div class="result-label">Semantic agreement rules implemented</div>
+    </div>
+    <div class="result-card">
+      <div class="result-num accent">100%</div>
+      <div class="result-label">Error detection accuracy on test set</div>
+    </div>
+    <div class="result-card">
+      <div class="result-num">28</div>
+      <div class="result-label">Verb forms covered in the grammar</div>
+    </div>
+    <div class="result-card">
+      <div class="result-num accent">4</div>
+      <div class="result-label">Sentence types: simple, compound, question, numeric</div>
+    </div>
+    <div class="result-card">
+      <div class="result-num">1</div>
+      <div class="result-label">Unified GUI with multi-tab parse tree viewer</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider"/>
+
+<!-- TEAM -->
+<section id="team">
+  <p class="section-label">Contributors</p>
+  <h2 class="section-title">Team Members</h2>
+
+  <div class="team-grid reveal">
+    <div class="team-card">
+      <div class="team-initials">SV</div>
+      <div class="team-name">Sushil V</div>
+      <div class="team-role">Project Lead · Grammar Design · ANTLR4</div>
+    </div>
+    <div class="team-card">
+      <div class="team-initials" style="background:var(--accent2);">BS</div>
+      <div class="team-name">Balaji Sakthivel</div>
+      <div class="team-role">Semantic Engine · Java Backend</div>
+    </div>
+    <div class="team-card">
+      <div class="team-initials" style="background:var(--valid);">SJ</div>
+      <div class="team-name">Shri Jayaram</div>
+      <div class="team-role">GUI Development · Testing · Docs</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">Tamil Semantic Analyzer</div>
+  <div class="footer-info">
+    <div>ANTLR4 · Java · NLP · Compiler Design</div>
+    <div style="margin-top:0.3rem;">Final Year Project · 2024–2025</div>
+  </div>
+</footer>
+
+<script>
+  // ─── TAB SWITCHING ───────────────────────────────────────────────────────────
+  function switchTab(btn, id) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + id).classList.add('active');
+  }
+
+  // ─── DEMO LOGIC ─────────────────────────────────────────────────────────────
+  const PRONOUNS = {
+    'நான்':     { type:'first',          verbEnding:'ேன்',     desc:'1st person singular (I)' },
+    'நாங்கள்':  { type:'first_plural',   verbEnding:'ோம்',     desc:'1st person plural (We)' },
+    'அவர்கள்':  { type:'third_plural',   verbEnding:'ார்கள் or ினர்', desc:'3rd person plural (They)' },
+    'அவன்':     { type:'male',           verbEnding:'ான்',     desc:'3rd person male (He)' },
+    'அவள்':     { type:'female',         verbEnding:'ாள்',     desc:'3rd person female (She)' },
+  };
+
+  const VERBS = {
+    'வந்தேன்':     { ending:'ேன்', type:'first' },
+    'சாப்பிட்டேன்':{ ending:'ேன்', type:'first' },
+    'சென்றோம்':   { ending:'ோம்', type:'first_plural' },
+    'வந்தார்கள்': { ending:'ார்கள்', type:'third_plural' },
+    'இருந்தார்கள்':{ ending:'ார்கள்', type:'third_plural' },
+    'சென்றார்கள்':{ ending:'ார்கள்', type:'third_plural' },
+    'கட்டினர்':   { ending:'ினர்', type:'third_plural' },
+    'வந்தான்':    { ending:'ான்', type:'male' },
+    'படித்தான்':  { ending:'ான்', type:'male' },
+    'சென்றான்':   { ending:'ான்', type:'male' },
+    'வாங்கினான்': { ending:'ான்', type:'male' },
+    'வந்தாள்':    { ending:'ாள்', type:'female' },
+    'வந்தார்':    { ending:'ார்', type:'neutral' },
+    'படித்தார்':  { ending:'ார்', type:'neutral' },
+    'ஓடினார்':   { ending:'ார்', type:'neutral' },
+    'மகிழ்ந்தார்':{ ending:'ார்', type:'neutral' },
+    'உள்ளது':     { ending:'து', type:'neuter' },
+    'மலர்ந்தது':  { ending:'து', type:'neuter' },
+    'தொடங்கும்':  { ending:'ும்', type:'future' },
+    'வேண்டும்':   { ending:'ும்', type:'future' },
+  };
+
+  function colorTamil(str) {
+    return '<span style="color:#e5c07b">' + str + '</span>';
+  }
+  function colorVerb(str) {
+    return '<span style="color:#61afef">' + str + '</span>';
+  }
+  function colorValid(str) {
+    return '<span style="color:#98c379">' + str + '</span>';
+  }
+  function colorInvalid(str) {
+    return '<span style="color:#e06c75">' + str + '</span>';
+  }
+  function colorMuted(str) {
+    return '<span style="color:#5c6370;font-style:italic">' + str + '</span>';
+  }
+  function colorLabel(str) {
+    return '<span style="color:#888;font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase">' + str + '</span>';
+  }
+
+  function runDemo() {
+    const raw = document.getElementById('demoInput').value.trim();
+    const resultEl = document.getElementById('demoResult');
+    if (!raw) { resultEl.style.display='none'; return; }
+
+    const sentence = raw.replace(/[.?!,;:।]$/, '').trim();
+    const tokens = sentence.split(/\s+/);
+
+    // Find subject and verb
+    let subject = null, subjectProInfo = null;
+    let verb = null, verbInfo = null;
+
+    for (const tok of tokens) {
+      if (!subject && PRONOUNS[tok]) {
+        subject = tok;
+        subjectProInfo = PRONOUNS[tok];
+      } else if (!subject) {
+        // check if it's a proper noun (non-pronoun non-verb Tamil word)
+        let isVerb = false;
+        for (const v in VERBS) { if (tok === v) { isVerb = true; break; } }
+        if (!isVerb && tok.length > 1 && /[\u0B85-\u0BB9]/.test(tok)) {
+          subject = tok;
+        }
+      }
+      if (!verb) {
+        for (const v in VERBS) {
+          if (tok === v) { verb = v; verbInfo = VERBS[v]; break; }
+        }
+      }
+    }
+
+    let lines = [];
+    lines.push(colorLabel('Input Sentence'));
+    lines.push('  ' + colorTamil(raw));
+    lines.push('');
+    lines.push(colorLabel('Tokens detected'));
+    for (const t of tokens) {
+      let type = 'TAMIL_WORD';
+      if (PRONOUNS[t]) type = 'PRONOUN';
+      else if (VERBS[t]) type = 'TENSE_SUFFIX';
+      else if (/^[0-9]+$/.test(t)) type = 'NUMBER';
+      else if (/^[\u0BE6-\u0BEF]+$/.test(t)) type = 'TAMIL_NUMBER';
+      else if (/^[.?!,;:]$/.test(t)) type = 'PUNCT';
+      lines.push('  <span style="color:#c678dd">' + type.padEnd(14) + '</span>  →  ' + colorTamil(t));
+    }
+    lines.push('');
+    lines.push(colorLabel('Parse Tree'));
+    lines.push('  <span style="color:#666">file</span>');
+    lines.push('    <span style="color:#666">sentence</span>');
+    lines.push('      <span style="color:#666">clause</span>');
+    if (subject) lines.push('        <span style="color:#666">subject → </span>' + colorTamil(subject));
+    if (verb)    lines.push('        <span style="color:#666">verbPhrase → </span>' + colorVerb(verb));
+    lines.push('');
+    lines.push(colorLabel('Semantic Analysis'));
+    lines.push('  Subject : ' + (subject ? colorTamil(subject) : colorMuted('(none)')));
+    lines.push('  Verb    : ' + (verb ? colorVerb(verb) : colorMuted('(not recognized)')));
+
+    let status = 'VALID', errorMsg = null;
+
+    if (!verb) {
+      status = 'UNKNOWN';
+      errorMsg = 'Verb not found in known forms. Add it to TENSE_SUFFIX in the grammar.';
+    } else if (subject && subjectProInfo) {
+      const vtype = verbInfo.type;
+      if (subjectProInfo.type === 'first' && vtype !== 'first') {
+        status = 'INVALID';
+        errorMsg = "'" + subject + "' (நான்) must use verb ending 'ேன்'. Found: '" + verbInfo.ending + "'.";
+      } else if (subjectProInfo.type === 'first_plural' && vtype !== 'first_plural') {
+        status = 'INVALID';
+        errorMsg = "'" + subject + "' (நாங்கள்) must use verb ending 'ோம்'. Found: '" + verbInfo.ending + "'.";
+      } else if (subjectProInfo.type === 'third_plural' && vtype !== 'third_plural') {
+        status = 'INVALID';
+        errorMsg = "Plural subject must use plural verb (ார்கள் or ினர்). Found: '" + verbInfo.ending + "'.";
+      } else if (subjectProInfo.type === 'male' && vtype !== 'male') {
+        status = 'INVALID';
+        errorMsg = "'" + subject + "' (அவன்) must use verb ending 'ான்'. Found: '" + verbInfo.ending + "'.";
+      } else if (subjectProInfo.type === 'female' && vtype !== 'female') {
+        status = 'INVALID';
+        errorMsg = "'" + subject + "' (அவள்) must use verb ending 'ாள்'. Found: '" + verbInfo.ending + "'.";
+      }
+    }
+
+    lines.push('');
+    if (errorMsg) {
+      lines.push(colorInvalid('  Semantic Error:'));
+      lines.push(colorInvalid('  ' + errorMsg));
+      lines.push('');
+    }
+    lines.push('  Status  : ' + (status === 'VALID'
+      ? colorValid('✓  VALID')
+      : status === 'INVALID'
+        ? colorInvalid('✗  INVALID')
+        : '<span style="color:#d19a66">?  UNKNOWN (verb not in grammar)</span>'));
+
+    resultEl.innerHTML = lines.join('\n');
+    resultEl.style.display = 'block';
+  }
+
+  function setAndRun(sentence) {
+    document.getElementById('demoInput').value = sentence;
+    runDemo();
+  }
+
+  document.getElementById('demoInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') runDemo();
+  });
+
+  // ─── SCROLL REVEAL ──────────────────────────────────────────────────────────
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
